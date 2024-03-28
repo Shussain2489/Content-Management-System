@@ -21,6 +21,18 @@ public class UserRequestDTO {
 	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
 	         message = "Password must" + " contain at least one letter, one number, one special character")
 	private String password;
+	
+	private boolean deleted;
+	
+	
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
 	public String getUserName() {
 		return userName;

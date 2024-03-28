@@ -12,4 +12,8 @@ public interface UserService {
 
 	public ResponseEntity<ResponseStructure<UserResponse>> registerUser(UserRequestDTO user) throws UserAlreadyExistByEmailException;
 
+	public ResponseEntity<ResponseStructure<UserResponse>> deleteUser(int userId);
+
+	public ResponseEntity<ResponseStructure<UserResponse>> findUniqueUser(int user);
+
 }

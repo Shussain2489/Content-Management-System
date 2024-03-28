@@ -31,4 +31,9 @@ public class AppExceptionHandler  {
 		return errorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "User already exist with the email");
 		}
 		
+		@ExceptionHandler
+		public ResponseEntity<ErrorStructure<String>> handleUserAlreadyExistByEmail(UserNotFoundByIdException ex) {
+			
+		return errorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "No user ID found in the database");
+		}
 }

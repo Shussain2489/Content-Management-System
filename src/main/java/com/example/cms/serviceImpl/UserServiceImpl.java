@@ -1,12 +1,16 @@
 package com.example.cms.serviceImpl;
 
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.cms.exception.UserAlreadyExistByEmailException;
+import com.example.cms.exception.UserNotFoundByIdException;
 import com.example.cms.model.User;
 import com.example.cms.repository.UserRepository;
 import com.example.cms.responseDTO.UserResponse;
@@ -38,7 +42,30 @@ public class UserServiceImpl implements UserService{
 				
 		}
 
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> deleteUser(int userId) {
+		 return userRepo.findById(userId).map( user -> {
+	                 user.setDeleted(true);
+	                 user=userRepo.save(user);
+	                 UserResponse userResponse = mapToUserResponse(user);
+	                 return ResponseEntity.ok(structure.setStatusCode(HttpStatus.OK.value())
+	         				.setMessage("user  deleted sucessfully  !")
+	         				.setBody(userResponse));
+	                 })
+	            .orElseThrow(()-> new UserNotFoundByIdException("User not found for the given ID"));
 
+	}
+	
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> findUniqueUser(int userId) {
+		
+		return userRepo.findById(userId).map(u->{
+		return ResponseEntity.ok(structure.setStatusCode(HttpStatus.OK.value())
+				.setMessage("User found successfully")
+				.setBody(mapToUserResponse(u)));})
+				.orElseThrow(()->new UserNotFoundByIdException("User not found for the given ID"));
+ 	}
+	
 	private UserResponse mapToUserResponse(User user) {
 		UserResponse userResponse = new UserResponse();
 			userResponse.setUserID(user.getUserId());
@@ -53,8 +80,12 @@ public class UserServiceImpl implements UserService{
 		user.setEmail(userRequest.getEmail());
 		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 		user.setUserName(userRequest.getUserName());
+		user.setDeleted(false);
 		
 		return user;
 	}
+
+
+	
 	
 }
